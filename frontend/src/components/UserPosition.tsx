@@ -15,20 +15,29 @@ export default function UerPosition({ userAddress, provider}: Props){
     useEffect(()=>{
         const fetchData = async () =>{
             const pool = new ethers.Contract(CONTRACTS.LENDING_POOL_ADDRESS, CONTRACTS.LENDING_POOL_ABI, provider);
+            const interestRate = 0.10;
+            const secondsPerYear = 365 * 24 * 60 * 60;
+            const now = Math.floor(Date.now() / 1000);
             
             const updated = await Promise.all(TOKENS.map(async (token) =>{
                 const erc20 = new ethers.Contract(token.address, CONTRACTS.DAI_ABI, provider);
 
-                const [wallet, deposit, accrueDebt, price] = await Promise.all([
+                const [wallet, deposit, principal, price, lastTimestamp] = await Promise.all([
                     erc20.balanceOf(userAddress),
                     pool.userBalances(userAddress, token.address),
-                    pool.getAccruedDebt(userAddress, token.address),
-                    pool.assetPrices(token.address)
+                    pool.userBorrows(userAddress, token.address),
+                    pool.assetPrices(token.address),
+                    pool.lastBorrowTimestamp(userAddress, token.address)
                 ]);
 
+
+                const elapsed = now - Number(lastTimestamp);
+                const interest = principal * BigInt(Math.floor(interestRate * 1e18)) * BigInt(elapsed) / BigInt(secondsPerYear) / BigInt(1e18);
+                const totalDebt = principal + interest;
+                
                 const walletFloat = parseFloat(ethers.formatUnits(wallet, token.decimals));
                 const depositFloat = parseFloat(ethers.formatUnits(deposit, token.decimals));
-                const debtFloat = parseFloat(ethers.formatUnits(accrueDebt, token.decimals));
+                const debtFloat = parseFloat(ethers.formatUnits(totalDebt, token.decimals));
                 const priceUsd = parseFloat(ethers.formatUnits(price, token.decimals));
 
                 const depositUsd = depositFloat * priceUsd;
@@ -62,7 +71,7 @@ export default function UerPosition({ userAddress, provider}: Props){
                 <th className="text-left">Asset</th>
                 <th>Wallet</th>
                 <th>Deposited</th>
-                <th>Borrowed</th>
+                <th>Borrowed (with interest)</th>
                 <th>Net (USD)</th>
               </tr>
             </thead>
@@ -72,7 +81,7 @@ export default function UerPosition({ userAddress, provider}: Props){
                   <td>{t.symbol}</td>
                   <td>{t.wallet}</td>
                   <td>{t.deposit}</td>
-                  <td>{t.debt}</td>
+                  <td>{t.debt.toFixed(4)}</td>
                   <td className={t.net >= 0 ? "text-green-400" : "text-red-400"}>
                     ${t.net.toFixed(2)}
                   </td>

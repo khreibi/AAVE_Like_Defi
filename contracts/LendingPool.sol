@@ -127,6 +127,25 @@ contract LendingPool is Ownable, LendingStorage, LendingLogic, LendingEvents  {
         
     }
 
+    function repay(address _asset, uint256 _amount) external greaterThenZero(_amount) {
+      _accrueInterest(msg.sender, _asset);
+      
+      uint256 currentDebt = userBorrows[msg.sender][_asset];
+
+      if(_amount > currentDebt){
+        _amount = currentDebt;
+      }
+
+      bool ok = IERC20(_asset).transferFrom(msg.sender, address(this), _amount);
+      if(!ok) revert TransferFailed();
+
+      userBorrows[msg.sender][_asset] -= _amount;
+
+      if(userBorrows[msg.sender][_asset] == 0){
+        lastBorrowTimestamp[msg.sender][_asset] = 0;
+      }
+
+    }
 
     function _repayDebt(address _asset, uint256 _amount) private {
         bool ok = IERC20(_asset).transferFrom(msg.sender, address(this), _amount);

@@ -10,6 +10,7 @@ describe("LendingPool", () => {
   let user: any;
 
   beforeEach(async () => {
+    
     [owner, user] = await ethers.getSigners();
 
     const MockDAIFactory = await ethers.getContractFactory("MockDAI");
@@ -188,18 +189,11 @@ describe("LendingPool", () => {
       const expectedDebt = borrowAmountFloat + expectedInterest;
     
       const actualDebtFloat = parseFloat(ethers.formatEther(accruedDebt));
-    
-      console.log("💡 Expected Debt:", expectedDebt.toFixed(6));
-      console.log("📈 Actual Debt:  ", actualDebtFloat.toFixed(6));
-    
       // Assert with a small margin
       expect(actualDebtFloat).to.be.closeTo(expectedDebt, 0.01);
     });
     
-    
-    
 
-    
   });
 
 
