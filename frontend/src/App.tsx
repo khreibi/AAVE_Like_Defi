@@ -7,7 +7,7 @@ import UserStats from "./components/UserStats";
 import BorrowForm from "./components/BorrowForm";
 import WithdrawForm from "./components/withdrawForm";
 import LiquidationForm from "./components/LiquidationForm";
-
+import UserPosition from "./components/UserPosition";
 
 function App() {
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
@@ -63,6 +63,14 @@ function App() {
 
     {signer && userAddress && (
       <LiquidationForm signer={signer} userAddress={userAddress} />
+    )}
+
+    {provider && userAddress && (
+
+        <>
+          <UserStats userAddress={userAddress} provider={provider} />
+          <UserPosition userAddress={userAddress} provider={provider} />
+        </>
     )}
     </div>
   );
