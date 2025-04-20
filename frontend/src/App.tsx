@@ -8,6 +8,8 @@ import BorrowForm from "./components/BorrowForm";
 import WithdrawForm from "./components/withdrawForm";
 import LiquidationForm from "./components/LiquidationForm";
 import UserPosition from "./components/UserPosition";
+import LiquidationLeaderboard from "./components/LiquidationLeaderboard";
+
 
 function App() {
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
@@ -71,6 +73,10 @@ function App() {
           <UserStats userAddress={userAddress} provider={provider} />
           <UserPosition userAddress={userAddress} provider={provider} />
         </>
+    )}
+
+    {provider && (
+      <LiquidationLeaderboard provider={provider} />
     )}
     </div>
   );
