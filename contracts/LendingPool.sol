@@ -145,6 +145,8 @@ contract LendingPool is Ownable, LendingStorage, LendingLogic, LendingEvents  {
         lastBorrowTimestamp[msg.sender][_asset] = 0;
       }
 
+      emit Repay(msg.sender, _asset, _amount);
+
     }
 
     function _repayDebt(address _asset, uint256 _amount) private {

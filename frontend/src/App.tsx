@@ -9,7 +9,7 @@ import WithdrawForm from "./components/withdrawForm";
 import LiquidationForm from "./components/LiquidationForm";
 import UserPosition from "./components/UserPosition";
 import LiquidationLeaderboard from "./components/LiquidationLeaderboard";
-
+import RepayForm from "./components/RepayForm";
 
 function App() {
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
@@ -26,60 +26,54 @@ function App() {
   return (
     <div className="min-h-screen p-6 bg-gray-900 text-white">
       <h1 className="text-2xl font-bold mb-4">🟢 AAVE Lite Frontend</h1>
-
+  
       <WalletConnect onConnect={handleConnect} />
-
-      {signer && userAddress && provider && (
-  <UserStats userAddress={userAddress} provider={provider} />
-)}
-
-      {userAddress && (
-        <>
-          <p className="mt-4 mb-2">Select Token:</p>
-          <TokenSelector selected={selectedToken} onSelect={setSelectedToken} />
-        </>
-      )}
-      {signer && userAddress && (
-        <DepositForm
-          tokenSymbol={selectedToken}
-          signer={signer}
-          userAddress={userAddress}
-        />
-      )}
-
-      {signer && userAddress && (
-        <BorrowForm
-          tokenSymbol={selectedToken}
-          signer={signer}
-          userAddress={userAddress}
-        />
-      )}
-
-    {signer && userAddress && (
-      <WithdrawForm
-        tokenSymbol={selectedToken}
-        signer={signer}
-        userAddress={userAddress}
-      />
-      )}
-
-    {signer && userAddress && (
-      <LiquidationForm signer={signer} userAddress={userAddress} />
-    )}
-
-    {provider && userAddress && (
-
-        <>
-          <UserStats userAddress={userAddress} provider={provider} />
-          <UserPosition userAddress={userAddress} provider={provider} />
-        </>
-    )}
-
-    {provider && (
-      <LiquidationLeaderboard provider={provider} />
-    )}
+  
+      <table className="w-full table-auto border-separate border-spacing-y-4">
+        <tbody>
+          {signer && userAddress && provider && (
+            <>
+              <tr>
+                <td colSpan={4}>
+                  <UserStats userAddress={userAddress} provider={provider} />
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={4}>
+                  <TokenSelector selected={selectedToken} onSelect={setSelectedToken} />
+                </td>
+              </tr>
+            </>
+          )}
+  
+          {signer && userAddress && (
+            <tr>
+              <td><DepositForm tokenSymbol={selectedToken} signer={signer} userAddress={userAddress} /></td>
+              <td><BorrowForm tokenSymbol={selectedToken} signer={signer} userAddress={userAddress} /></td>
+              <td><WithdrawForm tokenSymbol={selectedToken} signer={signer} userAddress={userAddress} /></td>
+              <td><RepayForm tokenSymbol={selectedToken} signer={signer} userAddress={userAddress} /></td>
+            </tr>
+          )}
+  
+          {provider && userAddress && (
+            <tr>
+              <td colSpan={4}>
+                <UserPosition userAddress={userAddress} provider={provider} />
+              </td>
+            </tr>
+          )}
+  
+          {signer && userAddress && (
+            <tr>
+              <td colSpan={2}><LiquidationLeaderboard provider={provider} /></td>
+              <td colSpan={2}><LiquidationForm signer={signer} userAddress={userAddress} /></td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
+  
 }
 
 export default App;

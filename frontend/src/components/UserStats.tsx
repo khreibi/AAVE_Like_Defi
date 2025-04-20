@@ -42,6 +42,7 @@ export default function UserStats({ userAddress, provider }: Props) {
     lendingPool.on("Borrow", onUpdate);
     lendingPool.on("Withdraw", onUpdate);
     lendingPool.on("Liquidation", onUpdate);
+    lendingPool.on("Repay", onUpdate);
 
     // Cleanup
     return () => {
@@ -49,6 +50,7 @@ export default function UserStats({ userAddress, provider }: Props) {
         lendingPool.off("Borrow", onUpdate);
         lendingPool.off("Withdraw", onUpdate);
         lendingPool.off("Liquidation", onUpdate);
+        lendingPool.off("Repay", onUpdate);
     };
   }, [userAddress, provider]);
 

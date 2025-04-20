@@ -49,6 +49,7 @@ export default function DepositForm({ tokenSymbol, signer, userAddress }: Props)
 
   return (
     <div className="mt-6">
+      <h3 className="font-bold text-lg mb-2">➕ Deposit</h3>
       <div className="flex gap-2 items-center">
         <input
           type="number"

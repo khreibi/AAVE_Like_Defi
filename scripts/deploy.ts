@@ -62,11 +62,15 @@ async function main() {
   console.log("📦 Contract addresses and ABIs exported to frontend.");
 
   const testUser = "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199";
+  const testUser2 = "0xdD2FD4581271e230360230F9337D5c0430Bf44C0";
 
 // Transfer tokens to test wallet
   await dai.transfer(testUser, ethers.parseEther("1000"));
   await usdc.transfer(testUser, ethers.parseEther("1000"));
-  console.log(`💸 Supplied 1000 DAI + 1000 USDC to test user ${testUser}`);
+
+  await dai.transfer(testUser2, ethers.parseEther("1000"));
+  await usdc.transfer(testUser2, ethers.parseEther("1000"));
+  console.log(`💸 Supplied 1000 DAI + 1000 USDC to test user ${testUser} and ${testUser2}`);
   console.log(`🚀 Deployment complete!`);
 }
 
